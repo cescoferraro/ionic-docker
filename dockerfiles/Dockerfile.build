@@ -1,0 +1,6 @@
+FROM node:6
+RUN npm i -g cordova
+RUN npm i -g ionic
+WORKDIR /app
+COPY ./ /app
+RUN npm i

@@ -1,0 +1,49 @@
+version: '2'
+services:
+  production:
+    build:
+      context: .
+      dockerfile: ./dockerfiles/Dockerfile.prod
+    image: cescoferraro/ionic-docker:latest
+    ports:
+      - 3000:80
+  compile:
+    build:
+      context: .
+      dockerfile: ./dockerfiles/Dockerfile.build
+    image: cescoferraro/ionic-docker:builder
+    command: ionic build
+    volumes:
+      - ./pristine/src:/app/src:rw
+      - ./pristine/www:/app/www:rw
+  dev:
+    build:
+      context: .
+      dockerfile: ./dockerfiles/Dockerfile.build
+    image: cescoferraro/ionic-docker:dev
+    command: ionic serve --all
+    tty: true
+    environment:
+      - COMPOSE_HTTP_TIMEOUT=200
+    ports:
+      - 3500:3500
+      - 35729:35729
+    volumes:
+      - ./pristine/.tmp:/app/.tmp:rw
+      - ./pristine/src:/app/src:rw
+      - ./pristine/www:/app/www:rw
+  alpine:
+    build:
+      context: .
+      dockerfile: ./dockerfiles/Dockerfile.alpine.build
+    image: cescoferraro/ionic-docker:alpine-dev
+    command: ionic serve --all
+    tty: true
+    environment:
+      - COMPOSE_HTTP_TIMEOUT=200
+    ports:
+      - 3600:3600
+    volumes:
+      - ./pristine/.tmp:/app/.tmp:rw
+      - ./pristine/src:/app/src:rw
+      - ./pristine/www:/app/www:rw
